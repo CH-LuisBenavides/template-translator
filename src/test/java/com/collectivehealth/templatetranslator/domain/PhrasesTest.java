@@ -23,10 +23,10 @@ class PhrasesTest {
         );
         Phrases phrases = new Phrases(allValues);
 
-        Set<Phrases.Group> templates = phrases.templates();
+        Set<Group> templates = phrases.templates();
 
 
-        Phrases.Group expectedValues = new Phrases.Group("this costs around {NUM1}$", Set.copyOf(allValues));
+        Group expectedValues = new Group("this costs around (\\d+)$", Set.copyOf(allValues));
 
 
         assertEquals(Set.of(expectedValues), templates);
@@ -53,17 +53,17 @@ class PhrasesTest {
 
         Phrases phrases = new Phrases(allValues);
 
-        Set<Phrases.Group> templates = phrases.templates();
+        Set<Group> templates = phrases.templates();
 
 
-        Phrases.Group group1 = new Phrases.Group("this costs around {NUM1}$", Set.of(
+        Group group1 = new Group("this costs around (\\d+)$", Set.of(
                 "this costs around 20$",
                 "this costs around 30$",
                 "this costs around 40$",
                 "this costs around 50$",
                 "this costs around 60$"));
 
-        Phrases.Group group2 = new Phrases.Group("we just paid you {NUM1}$ for this", Set.of(
+        Group group2 = new Group("we just paid you (\\d+)$ for this", Set.of(
                 "we just paid you 20$ for this",
                 "we just paid you 30$ for this",
                 "we just paid you 40$ for this",
@@ -91,10 +91,10 @@ class PhrasesTest {
         Phrases phrases = new Phrases(similarButWithOutNumbers);
 
 
-        Set<Phrases.Group> templates = phrases.templates();
+        Set<Group> templates = phrases.templates();
 
 
-        Phrases.Group expected = new Phrases.Group("Hello {WORD1} how was your day?", Set.copyOf(similarButWithOutNumbers));
+        Group expected = new Group("Hello (\\w+) how was your day?", Set.copyOf(similarButWithOutNumbers));
 
 
         assertEquals(Set.of(expected), templates);
@@ -132,18 +132,18 @@ class PhrasesTest {
         Phrases phrases = new Phrases(similarButWithOutNumbers);
 
 
-        Set<Phrases.Group> templates = phrases.templates();
+        Set<Group> templates = phrases.templates();
 
 
-        Phrases.Group expected = new Phrases.Group(
+        Group expected = new Group(
                         """
-                        Labs for COVID-{NUM1} testing will be covered.
+                        Labs for COVID-(\\d+) testing will be covered.
                         Call your provider beforehand to ask about the safest way to travel,
                         where to wait to be seen,
                         and whether testing is available.
-                        Your medical plan doesn't cover any at-home COVID-{NUM2} tests.
+                        Your medical plan doesn't cover any at-home COVID-(\\d+) tests.
                         You may or may not have coverage through your pharmacy plan.
-                        You can check your pharmacy plan's benefits by logging into your {WORD1} {WORD2} account or by contacting a Collective Health Member Advocate.""", Set.copyOf(similarButWithOutNumbers));
+                        You can check your pharmacy plan's benefits by logging into your (\\w+) (\\w+) account or by contacting a Collective Health Member Advocate.""", Set.copyOf(similarButWithOutNumbers));
 
 
         assertEquals(Set.of(expected), templates);
