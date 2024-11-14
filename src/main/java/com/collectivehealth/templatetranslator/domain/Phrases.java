@@ -104,17 +104,22 @@ public class Phrases {
                 }
             }
         }
-
+        int numCounter = 1;
+        int wordCounter = 1;
         StringBuilder templateBuilder = new StringBuilder();
         for (int i = 0; i < tokens.length; i++) {
             if (isVariable[i]) {
-                if (tokens[i].contains("{NUM}")) {
-                    templateBuilder.append("{NUM} ");
-                } else {
-                    templateBuilder.append("{WORD} ");
-                }
+                templateBuilder.append("{WORD%d} ".formatted(wordCounter));
+                wordCounter++;
+
             } else {
+                if (tokens[i].contains("{NUM}")) {
+                    templateBuilder.append(tokens[i].replace("{NUM}","{NUM%d}").formatted(numCounter)).append(" ") ;
+                    numCounter++;
+                } else {
+
                 templateBuilder.append(tokens[i]).append(" ");
+                }
             }
         }
 
