@@ -40,7 +40,7 @@ public record Translation(String translatedTemplate, Group group) {
     }
 
     private  String replacePlaceholders(String text) {
-        Pattern pattern = Pattern.compile(group.template().replaceAll("\\?", "\\\\?").replaceAll("\\$","\\\\\\$"));
+        Pattern pattern = Pattern.compile(group.template().replaceAll("\\?", "\\\\\\?").replaceAll("\\$","\\\\\\$"));
         Matcher matcher = pattern.matcher(text.trim());
 
         if (matcher.matches()) {
