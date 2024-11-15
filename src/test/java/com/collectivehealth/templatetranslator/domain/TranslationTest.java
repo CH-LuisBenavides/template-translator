@@ -2,10 +2,9 @@ package com.collectivehealth.templatetranslator.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TranslationTest {
 
@@ -47,7 +46,7 @@ class TranslationTest {
                 "hello there Jesus Benavides, how was your day?",
                 "hello there David Benavides, how was your day?"
         );
-        Group group = new Group("hello there (\\w+) (\\w+), how was your day\\?", originalValues);
+        Group group = new Group("hello there (\\w+) (\\w+), how was your day?", originalValues);
 
         Translation translation = new Translation("Hola (\\w+) (\\w+), como estuvo tu dia?", group);
 
@@ -115,4 +114,42 @@ class TranslationTest {
 
         assertEquals(expected, translate);
     }
+    @Test
+    void translatingWithMoreThanOneNumberAndWord2() {
+        Set<String> similarButWithOutNumbers = Set.of(
+                        "Want to integrate acupuncture into your care routine? This plan covers up to 20 sessions per year with a licensed acupuncturist.",
+                        "Want to integrate acupuncture into your care routine? This plan covers up to 12 sessions per year with a licensed acupuncturist.",
+                        "Want to integrate acupuncture into your care routine? This plan covers up to 10 sessions per year with a licensed acupuncturist.",
+                        "Want to integrate acupuncture into your care routine? This plan covers up to 24 sessions per year with a licensed acupuncturist.",
+                        "Want to integrate acupuncture into your care routine? This plan covers up to 30 sessions per year with a licensed acupuncturist."
+        );
+
+
+
+        Group group = new Group(
+                "Want to integrate acupuncture into your care routine? This plan covers up to (\\d+) sessions per year with a licensed acupuncturist.", similarButWithOutNumbers);
+
+
+        Translation translation = new Translation("¿Quieres integrar la acupuntura en tu rutina de cuidado? Este plan cubre hasta (\\d+) sesiones por año con un acupunturista licenciado.", group);
+
+
+        Translation.TranslatedGroup translate = translation.translate();
+
+        Translation.TranslatedGroup expected = new Translation.TranslatedGroup(similarButWithOutNumbers,
+                Set.of(
+                        "¿Quieres integrar la acupuntura en tu rutina de cuidado? Este plan cubre hasta 20 sesiones por año con un acupunturista licenciado.",
+                        "¿Quieres integrar la acupuntura en tu rutina de cuidado? Este plan cubre hasta 12 sesiones por año con un acupunturista licenciado.",
+                        "¿Quieres integrar la acupuntura en tu rutina de cuidado? Este plan cubre hasta 10 sesiones por año con un acupunturista licenciado.",
+                        "¿Quieres integrar la acupuntura en tu rutina de cuidado? Este plan cubre hasta 24 sesiones por año con un acupunturista licenciado.",
+                        "¿Quieres integrar la acupuntura en tu rutina de cuidado? Este plan cubre hasta 30 sesiones por año con un acupunturista licenciado."
+                )
+        );
+
+
+        assertEquals(expected, translate);
+    }
+
+
+
+
 }

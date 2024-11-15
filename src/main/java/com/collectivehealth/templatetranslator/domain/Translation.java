@@ -40,7 +40,7 @@ public record Translation(String translatedTemplate, Group group) {
     }
 
     private  String replacePlaceholders(String text) {
-        Pattern pattern = Pattern.compile(group.template().replaceAll("\\?", "\\?").replaceAll("\\$","\\\\\\$"));
+        Pattern pattern = Pattern.compile(group.template().replaceAll("\\?", "\\\\?").replaceAll("\\$","\\\\\\$"));
         Matcher matcher = pattern.matcher(text.trim());
 
         if (matcher.matches()) {
@@ -56,12 +56,10 @@ public record Translation(String translatedTemplate, Group group) {
 
             // Replace placeholders in the template
             String translatedText = translatedTemplate;
-            int groupIndex = 1;
 
             for (String value : capturedValues) {
                 // Replace the first occurrence of the regex pattern placeholder dynamically
                 translatedText = translatedText.replaceFirst("\\(\\\\[wd+]{0,2}\\)", value);
-                groupIndex++;
             }
 
             return translatedText;
