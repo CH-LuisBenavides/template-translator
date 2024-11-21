@@ -51,8 +51,6 @@ public record Translation(String translatedTemplate, Group group) {
                 capturedValues.add(matcher.group(i));
             }
 
-            // Log the captured values
-            System.out.println("Captured Values: " + capturedValues);
 
             // Replace placeholders in the template
             String translatedText = translatedTemplate;

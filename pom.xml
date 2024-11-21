@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.collectivehealth</groupId>
 	<artifactId>template-translator</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>template-translator</name>
 	<description>template-translator</description>
 	<url/>

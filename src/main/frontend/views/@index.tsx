@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
-import {AppLayout, Button, Details, TextArea, VerticalLayout} from "@vaadin/react-components";
+import {Button, TextArea} from "@vaadin/react-components";
 import {useSignal} from "@vaadin/hilla-react-signals";
 import {TranslatorResource} from "Frontend/generated/endpoints";
 import DemoValues
     from "Frontend/generated/com/collectivehealth/templatetranslator/infrastructure/secondary/demo/DemoValues";
-import GroupDto
-    from "Frontend/generated/com/collectivehealth/templatetranslator/infrastructure/primary/vaadin/GroupDto";
-import Translation from "Frontend/generated/com/collectivehealth/templatetranslator/domain/Translation";
 import TranslatedGroup
     from "Frontend/generated/com/collectivehealth/templatetranslator/domain/Translation/TranslatedGroup";
+import TranslationDto
+    from "Frontend/generated/com/collectivehealth/templatetranslator/infrastructure/primary/vaadin/TranslationDto";
 
 const TwoLists = ({ori, t, index}: { ori: string | undefined, t: TranslatedGroup, index: number }) => (
     <>
@@ -21,8 +20,7 @@ const TwoLists = ({ori, t, index}: { ori: string | undefined, t: TranslatedGroup
 const Index = () => {
 
     const text = useSignal('');
-    const translations = useSignal<string[]>([]);
-    const [groups, setGroups] = useState<GroupDto[]>([]);
+    const [translations, setTranslations] = useState<TranslationDto[]>([]);
     const [translated, setTranslated] = useState<TranslatedGroup[]>([]);
 
 
@@ -34,45 +32,45 @@ const Index = () => {
 
         const filtered = fetchedGroups?.filter(x => !!x) || [];
 
-        setGroups(filtered);
-
-
+        setTranslations(filtered);
     }
 
 
     const translate = async () => {
 
-        const templated = groups.map((group, i) => {
-            const t: Translation = {group, translatedTemplate: translations.value[i]};
-            return t;
-        });
-
-        const values = await TranslatorResource.translations(templated);
+        const values = await TranslatorResource.translations(translations);
 
         setTranslated(values?.filter(x => !!x) || []);
-
 
     }
 
 
     const displayGroups = () => {
 
-        if (!groups || groups?.length === 0) return (
+        if (!translations || translations?.length === 0) return (
             <p>please add text to find the pattern</p>
         )
 
         return <>{
-            groups
-                .map((group, i) => (
+            translations
+                .map((t, i) => (
                     <div key={i} style={{display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: "1rem"}}>
-                        <b>{group.template}</b>
+                        <b>{t?.group?.template}</b>
                         <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.5rem'}}>
-                            {group.phrases?.map(p => <span key={Math.random()}>{p}</span>)}
-
+                            {t.group?.phrases?.map(p => <span key={Math.random()}>{p}</span>)}
                         </div>
 
-                        <TextArea value={translations.value[i]} onValueChanged={(event) => {
-                            translations.value[i] = event.detail.value;
+                        <TextArea value={t.translatedTemplate} onValueChanged={(event) => {
+
+                            const updated = translations.map(g => {
+                                if (g.group?.template === t.group?.template) {
+                                    g.translatedTemplate = event.detail.value;
+                                    return {group: g.group, translatedTemplate: event.detail.value};
+                                }
+                                return g;
+                            });
+
+                            setTranslations([...updated]);
                         }}
                                   style={{width: '100%'}}
                         >
@@ -84,7 +82,7 @@ const Index = () => {
 
     }
 
-    const displayTranlations = () => {
+    const displayTranslations = () => {
         if (!translated || translated.length === 0) return;
 
 
@@ -115,11 +113,8 @@ const Index = () => {
             />
             <Button onClick={generateTemplates}>Create Template</Button>
 
-
             {displayGroups()}
-
-
-            {displayTranlations()}
+            {displayTranslations()}
         </div>
 
     );

@@ -23,8 +23,8 @@ public class TranslatorResource {
     }
 
 
-    public Set<GroupDto> getTemplates(DemoValues values) {
-        return createTemplate.handle(values).stream().map(GroupDto::from).collect(Collectors.toSet());
+    public Set<TranslationDto> getTemplates(DemoValues values) {
+        return createTemplate.handle(values).stream().map(TranslationDto::fromDomain).collect(Collectors.toSet());
     }
 
     public Set<Translation.TranslatedGroup> translations(Set<Translation> translations) {
